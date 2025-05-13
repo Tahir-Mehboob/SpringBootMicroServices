@@ -1,0 +1,4 @@
+package com.easybank.accounts.repository;
+
+public interface AccountsRepository {
+}

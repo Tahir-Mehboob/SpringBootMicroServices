@@ -1,0 +1,5 @@
+package com.easybank.accounts.constants;
+
+public class AccountConstants {
+    
+}
