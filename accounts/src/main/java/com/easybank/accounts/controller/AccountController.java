@@ -1,5 +1,6 @@
 package com.easybank.accounts.controller;
 
+import com.easybank.accounts.constants.AccountConstants;
 import com.easybank.accounts.dto.CustomerDto;
 import com.easybank.accounts.dto.ResponseDto;
 import com.easybank.accounts.entity.Customer;
@@ -27,7 +28,7 @@ public class AccountController {
     public ResponseEntity<ResponseDto> createAccount(@RequestBody CustomerDto customerDto){
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(new ResponseDto())
+                .body(new ResponseDto(AccountConstants.STATUS_201,AccountConstants.MESSAGE_201));
     }
 
 }
