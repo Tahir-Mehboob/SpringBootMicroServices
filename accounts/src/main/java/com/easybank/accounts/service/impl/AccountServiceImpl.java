@@ -1,14 +1,24 @@
 package com.easybank.accounts.service.impl;
 
+import com.easybank.accounts.constants.AccountConstants;
 import com.easybank.accounts.dto.CustomerDto;
+import com.easybank.accounts.entity.Accounts;
+import com.easybank.accounts.entity.Customer;
+import com.easybank.accounts.mapper.CustomerMapper;
+import com.easybank.accounts.repository.AccountsRepository;
+import com.easybank.accounts.repository.CustomerRepository;
 import com.easybank.accounts.service.IAccountService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Random;
 
 @Service
 @AllArgsConstructor
 public class AccountServiceImpl implements IAccountService {
 
+    private AccountsRepository accountsRepository;
+    private CustomerRepository customerRepository;
 
     /**
      * create an account for a customer
@@ -17,6 +27,21 @@ public class AccountServiceImpl implements IAccountService {
      */
     @Override
     public void createAccount(CustomerDto customerDto) {
+        Customer customer = CustomerMapper.mapToCustomer(customerDto,new Customer();
+        Customer saveCustomer =  customerRepository.save(customer);
+        accountsRepository.save(createNewAccount(saveCustomer));
+    }
+
+    private Accounts createNewAccount(Customer customer){
+        Accounts newAccount = new Accounts();
+        newAccount.setCustomerId(customer.getCustomerId());
+
+        long randomAccNumber = 1000000000L+ new Random().nextInt(900000000);
+        newAccount.setAccountNumber(randomAccNumber);
+        newAccount.setAccountType(AccountConstants.SAVING);
+        newAccount.setBranchAddress(AccountConstants.ADDRESS);
+        return newAccount;
 
     }
+
 }
