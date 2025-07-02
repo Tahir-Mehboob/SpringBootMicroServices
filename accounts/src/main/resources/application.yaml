@@ -3,19 +3,27 @@
 server:
   port: 8080
 
-spring:
-  datasource:
-    url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: ''
-  h2:
-    console:
-     enabled: true
+#spring:
+#  datasource:
+#    url: jdbc:h2:mem:testdb
+#    driver-class-name: org.h2.Driver
+#    username: sa
+#    password: ''
+#  h2:
+#    console:
+#     enabled: true
 
+  # i'm disable b/c i'm using mongodb
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: journaldb
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: update
       show-sql: true
+
 

@@ -27,21 +27,20 @@ public class AccountServiceImpl implements IAccountService {
      */
     @Override
     public void createAccount(CustomerDto customerDto) {
-        Customer customer = CustomerMapper.mapToCustomer(customerDto,new Customer();
-        Customer saveCustomer =  customerRepository.save(customer);
+        Customer customer = CustomerMapper.mapToCustomer(customerDto, new Customer());
+        Customer saveCustomer = customerRepository.save(customer);
         accountsRepository.save(createNewAccount(saveCustomer));
     }
 
-    private Accounts createNewAccount(Customer customer){
+    private Accounts createNewAccount(Customer customer) {
         Accounts newAccount = new Accounts();
         newAccount.setCustomerId(customer.getCustomerId());
 
-        long randomAccNumber = 1000000000L+ new Random().nextInt(900000000);
+        long randomAccNumber = 1000000000L + new Random().nextInt(900000000);
         newAccount.setAccountNumber(randomAccNumber);
         newAccount.setAccountType(AccountConstants.SAVING);
         newAccount.setBranchAddress(AccountConstants.ADDRESS);
         return newAccount;
 
     }
-
 }

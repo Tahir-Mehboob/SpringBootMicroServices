@@ -1,0 +1,11 @@
+package com.easybank.accounts.exception;
+
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+@ResponseStatus(value = HttppStatus.BAD_REQUEST)
+public class CustomerAlreadyExistException extends  RuntimeException {
+
+    public CustomerAlreadyExistException(String message) {
+        super(message);
+    }
+}
