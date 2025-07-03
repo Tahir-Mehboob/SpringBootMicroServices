@@ -1,41 +1,48 @@
 package com.easybank.accounts.practice.controller;
 
 import com.easybank.accounts.practice.entity.JournalEnttiy;
+import com.easybank.accounts.practice.entity.JournalEnttiyV2;
+import com.easybank.accounts.practice.services.JournalEntryService;
+import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("journal")
 public class JournalEntryControllerV2 {
 
+    @Autowired
+    private JournalEntryService journalEntryService;
+
     @GetMapping
-    public List<JournalEnttiy> getAllJournalEntries() {
-        return null;
+    public List<JournalEnttiyV2> getAllJournalEntries() {
+        return journalEntryService.getAll();
     }
 
     @GetMapping("id/{myId}")
-    public JournalEnttiy getJournalEntity(@PathVariable Long myId) {
+    public JournalEnttiyV2 getJournalEntityById(@PathVariable ObjectId myId) {
         System.out.println("Request hit ... "+myId);
-        return null;
+        return journalEntryService.findJournalEntryByID(myId).orElse(null);
     }
 
     @PostMapping
-    public boolean creatEntry(@RequestBody JournalEnttiy journalEnttiy) {
-        return true;
+    public boolean creatEntry(@RequestBody JournalEnttiyV2 journalEnttiy) {
+        journalEnttiy.setDate(LocalDateTime.now());
+         journalEntryService.addJournalEntry(journalEnttiy);
+         return true;
     }
-    // write delete endpoints here
 
+    // write delete endpoints here
     @DeleteMapping("id/{myId}")
-    public boolean deleteEntry(@PathVariable Long myId) {
-        return null;
+    public boolean deleteEntry(@PathVariable ObjectId myId) {
+        return false;
     }
     // write update endpoints here
     @PutMapping("id/{myId}")
-    public JournalEnttiy updateEntry(@PathVariable Long myId, @RequestBody JournalEnttiy journalEnttiy) {
+    public JournalEnttiyV2 updateEntry(@PathVariable ObjectId myId, @RequestBody JournalEnttiyV2 journalEnttiy) {
         return null;
     }
 }
