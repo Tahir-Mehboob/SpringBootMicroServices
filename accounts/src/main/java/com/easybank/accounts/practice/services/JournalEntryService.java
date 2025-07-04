@@ -33,5 +33,9 @@ public class JournalEntryService {
     public Optional<JournalEnttiyV2> findJournalEntryByID(ObjectId id) {
         return journalEntryRepository.findById(id);
     }
+    public boolean deleteJournalEntryById(ObjectId id) {
+        journalEntryRepository.deleteById(id);
+        return true;
+    }
 }
 
