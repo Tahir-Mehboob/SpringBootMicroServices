@@ -3,12 +3,16 @@ package com.easybank.accounts.practice.controller;
 
 import com.easybank.accounts.practice.entity.JournalEnttiyV2;
 import com.easybank.accounts.practice.services.JournalEntryService;
+import org.apache.coyote.Response;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("journal")
@@ -22,17 +26,37 @@ public class JournalEntryControllerV2 {
         return journalEntryService.getAll();
     }
 
-    @GetMapping("id/{myId}")
+   /* @GetMapping("id/{myId}")
     public JournalEnttiyV2 getJournalEntityById(@PathVariable ObjectId myId) {
         System.out.println("Request hit ... "+myId);
         return journalEntryService.findJournalEntryByID(myId).orElse(null);
-    }
+    }*/
 
-    @PostMapping
+    @GetMapping("id/{myId}")
+    public ResponseEntity<JournalEnttiyV2> getJournalEntityById(@PathVariable ObjectId myId) {
+        Optional<JournalEnttiyV2> journalEnttiyV2 = journalEntryService.findJournalEntryByID(myId);
+        if(journalEnttiyV2.isPresent()) {
+            return new ResponseEntity<>(journalEnttiyV2.get(),HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+   /* @PostMapping
     public boolean creatEntry(@RequestBody JournalEnttiyV2 journalEnttiy) {
         journalEnttiy.setDate(LocalDateTime.now());
          journalEntryService.addJournalEntry(journalEnttiy);
          return true;
+    }*/
+
+    @PostMapping
+    public ResponseEntity<JournalEnttiyV2> creatEntry(@RequestBody JournalEnttiyV2 journalEnttiy) {
+       try {
+           journalEnttiy.setDate(LocalDateTime.now());
+           journalEntryService.addJournalEntry(journalEnttiy);
+           return new ResponseEntity<>(journalEnttiy, HttpStatus.CREATED);
+       }catch (Exception e) {
+           return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+       }
     }
 
     // write delete endpoints here
@@ -48,9 +72,7 @@ public class JournalEntryControllerV2 {
             oldJournalEnttiyV2.setTitle(newJournalEnttiy.getTitle() != null && newJournalEnttiy.getTitle().equals("")  ? newJournalEnttiy.getTitle() : oldJournalEnttiyV2.getTitle());
             oldJournalEnttiyV2.setContent(newJournalEnttiy.getContent() != null && newJournalEnttiy.getContent().equals("") ? newJournalEnttiy.getContent() : oldJournalEnttiyV2.getContent());
             journalEntryService.addJournalEntry(oldJournalEnttiyV2);
-
         }
         return oldJournalEnttiyV2;
-
     }
 }
