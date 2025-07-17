@@ -2,7 +2,9 @@ package com.easybank.accounts.practice.controller;
 
 
 import com.easybank.accounts.practice.entity.JournalEnttiyV2;
+import com.easybank.accounts.practice.entity.User;
 import com.easybank.accounts.practice.services.JournalEntryService;
+import com.easybank.accounts.practice.services.UserService;
 import org.apache.coyote.Response;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,25 +12,39 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("journal")
+@RequestMapping("journal_entries_v2")
 public class JournalEntryControllerV2 {
 
     @Autowired
     private JournalEntryService journalEntryService;
+
+    @Autowired
+    private UserService userService;
 
     /*@GetMapping
     public List<JournalEnttiyV2> getAllJournalEntries() {
         return journalEntryService.getAll();
     }*/
 
-    @GetMapping
+    /*@GetMapping
     public ResponseEntity<?> getAllJournalEntries() {
         List<JournalEnttiyV2> all = journalEntryService.getAll();
+        if (all != null && !all.isEmpty()) {
+            return new ResponseEntity<>(all, HttpStatus.OK);//journalEntryService.getAll().orElse(null>
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }*/
+
+    @GetMapping("/{userName}")
+    public ResponseEntity<?> getAllJournalEntriesOfUser(@PathVariable String userName) {
+        User user = userService.findUserByUserName(userName);
+        List<JournalEnttiyV2> all = user.getJournalEntries();
         if (all != null && !all.isEmpty()) {
             return new ResponseEntity<>(all, HttpStatus.OK);//journalEntryService.getAll().orElse(null>
         }
@@ -58,8 +74,9 @@ public class JournalEntryControllerV2 {
     }*/
 
     @PostMapping
-    public ResponseEntity<JournalEnttiyV2> creatEntry(@RequestBody JournalEnttiyV2 journalEnttiy) {
+    public ResponseEntity<JournalEnttiyV2> creatEntry(@RequestBody JournalEnttiyV2 journalEnttiy,@PathVariable String userName) {
        try {
+           User user = userService.findUserByUserName(userName);
            journalEnttiy.setDate(LocalDateTime.now());
            journalEntryService.addJournalEntry(journalEnttiy);
            return new ResponseEntity<>(journalEnttiy, HttpStatus.CREATED);

@@ -20,6 +20,7 @@ spring:
       host: localhost
       port: 27017
       database: journaldb
+      auto-index-creation: true
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:

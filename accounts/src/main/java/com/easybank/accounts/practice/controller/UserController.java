@@ -1,39 +1,53 @@
 package com.easybank.accounts.practice.controller;
 
-import com.easybank.accounts.practice.dto.UserDTO;
-import jakarta.transaction.UserTransaction;
-import jakarta.validation.Valid;
+
+import com.easybank.accounts.practice.entity.User;
+import com.easybank.accounts.practice.services.UserService;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/api/test")
+@RequestMapping("/user")
 public class UserController {
 
+    // create field Injection for UserService
     @Autowired
-    private UserDTO userdto;
+    private UserService userService;
     /**
      * Handles HTTP GET requests for the "/user" endpoint.
      *
      * @return a String response to be sent back to the client.
      */
-    @GetMapping("/user")
-    public ResponseEntity<UserDTO> user(){
-
-      /*  user.setName("Tahir Mehboob");
-        user.setPassword("1234");
-        user.setEmail("TahirMehboob106@gmail.com");*/
-
-        return ResponseEntity.ok(userdto);
+    @GetMapping
+    public List<User> getAllUsers() {
+        return userService.getAll();
     }
 
-    @PostMapping("/users")
-    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserDTO userdto){
-        // If validation passes, proceed
-        System.out.println("Request Hits............");
-        System.out.println("");
-        return ResponseEntity.ok(userdto);
+    @PostMapping
+    public ResponseEntity<?> addUser(@RequestBody User user) {
+        userService.addUser(user);
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
+    @DeleteMapping("id/{id}")
+    public boolean deleteUserById(@PathVariable ObjectId id) {
+        return userService.deleteUserById(id);
+    }
+
+    @PutMapping("/{userName}")
+    public ResponseEntity<?> updateUser(@RequestBody User user,@PathVariable String userName) {
+        User userInDb = userService.findUserByUserName(userName);
+        if(userInDb != null) {
+            userInDb.setUserName(user.getUserName());
+            userInDb.setPassword(user.getPassword());
+            userService.addUser(userInDb);
+            return new ResponseEntity<>(userInDb, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
