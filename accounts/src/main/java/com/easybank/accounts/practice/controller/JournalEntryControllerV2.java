@@ -21,9 +21,18 @@ public class JournalEntryControllerV2 {
     @Autowired
     private JournalEntryService journalEntryService;
 
-    @GetMapping
+    /*@GetMapping
     public List<JournalEnttiyV2> getAllJournalEntries() {
         return journalEntryService.getAll();
+    }*/
+
+    @GetMapping
+    public ResponseEntity<?> getAllJournalEntries() {
+        List<JournalEnttiyV2> all = journalEntryService.getAll();
+        if (all != null && !all.isEmpty()) {
+            return new ResponseEntity<>(all, HttpStatus.OK);//journalEntryService.getAll().orElse(null>
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
    /* @GetMapping("id/{myId}")
@@ -61,18 +70,20 @@ public class JournalEntryControllerV2 {
 
     // write delete endpoints here
     @DeleteMapping("id/{myId}")
-    public boolean deleteEntry(@PathVariable ObjectId myId) {
-        return journalEntryService.deleteJournalEntryById(myId);
+    public ResponseEntity<?> deleteEntry(@PathVariable ObjectId myId) {
+        journalEntryService.deleteJournalEntryById(myId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
     // write update endpoints here
     @PutMapping("id/{myId}")
-    public JournalEnttiyV2 updateEntry(@PathVariable ObjectId myId, @RequestBody JournalEnttiyV2 newJournalEnttiy) {
+    public ResponseEntity<?> updateEntry(@PathVariable ObjectId myId, @RequestBody JournalEnttiyV2 newJournalEnttiy) {
         JournalEnttiyV2 oldJournalEnttiyV2 = journalEntryService.findJournalEntryByID(myId).orElse(null);
         if(oldJournalEnttiyV2 != null) {
-            oldJournalEnttiyV2.setTitle(newJournalEnttiy.getTitle() != null && newJournalEnttiy.getTitle().equals("")  ? newJournalEnttiy.getTitle() : oldJournalEnttiyV2.getTitle());
-            oldJournalEnttiyV2.setContent(newJournalEnttiy.getContent() != null && newJournalEnttiy.getContent().equals("") ? newJournalEnttiy.getContent() : oldJournalEnttiyV2.getContent());
+            oldJournalEnttiyV2.setTitle(newJournalEnttiy.getTitle() != null && !newJournalEnttiy.getTitle().equals("")  ? newJournalEnttiy.getTitle() : oldJournalEnttiyV2.getTitle());
+            oldJournalEnttiyV2.setContent(newJournalEnttiy.getContent() != null && !newJournalEnttiy.getContent().equals("") ? newJournalEnttiy.getContent() : oldJournalEnttiyV2.getContent());
             journalEntryService.addJournalEntry(oldJournalEnttiyV2);
+            return new ResponseEntity<>(oldJournalEnttiyV2, HttpStatus.OK);
         }
-        return oldJournalEnttiyV2;
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

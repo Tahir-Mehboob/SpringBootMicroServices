@@ -1,12 +1,22 @@
 package com.easybank.accounts.practice.entity;
 
 import jakarta.persistence.Id;
+import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 
 @Document(collection = "journal_entries")
+/*@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+@EqualsAndHashCode*/
+//@Builder
+// instead of above, we can use Lombok
+@Data
 public class JournalEnttiyV2 {
 
     // fields
@@ -18,7 +28,7 @@ public class JournalEnttiyV2 {
 
     // getter and setter
 
-    public ObjectId getId() {
+    /*public ObjectId getId() {
         return id;
     }
 
@@ -48,5 +58,9 @@ public class JournalEnttiyV2 {
 
     public void setDate(LocalDateTime date) {
         this.date = date;
-    }
+    }*/
+
+    // removing getters and setters by using Lombok
+
+
 }
