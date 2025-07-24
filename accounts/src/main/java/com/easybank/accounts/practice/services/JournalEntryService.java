@@ -2,11 +2,13 @@ package com.easybank.accounts.practice.services;
 
 
 import com.easybank.accounts.practice.entity.JournalEnttiyV2;
+import com.easybank.accounts.practice.entity.User;
 import com.easybank.accounts.practice.repository.JournalEntryRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,8 +24,16 @@ public class JournalEntryService {
     @Autowired
     private JournalEntryRepository journalEntryRepository;
 
-    public void addJournalEntry(JournalEnttiyV2 journalEnttiy) {
-        journalEntryRepository.save(journalEnttiy);
+    @Autowired
+    private UserService userService;
+
+    public void addJournalEntry(JournalEnttiyV2 journalEnttiy, String userName) {
+        User user = userService.findUserByUserName(userName);
+        journalEnttiy.setDate(LocalDateTime.now());
+        JournalEnttiyV2 saved = journalEntryRepository.save(journalEnttiy);
+
+        user.getJournalEntries().add(saved);
+        userService.addUser(user);
     }
 
     public List<JournalEnttiyV2> getAll() {
