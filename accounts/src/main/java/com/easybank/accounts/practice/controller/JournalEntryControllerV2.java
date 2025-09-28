@@ -25,10 +25,10 @@ public class JournalEntryControllerV2 {
     @Autowired
     private UserService userService;
 
-    /*@GetMapping
+    @GetMapping
     public List<JournalEnttiyV2> getAllJournalEntries() {
         return journalEntryService.getAll();
-    }*/
+    }
 
     /*@GetMapping
     public ResponseEntity<?> getAllJournalEntries() {
@@ -39,6 +39,7 @@ public class JournalEntryControllerV2 {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }*/
 
+/*
     @GetMapping("/{userName}")
     public ResponseEntity<?> getAllJournalEntriesOfUser(@PathVariable String userName) {
         User user = userService.findUserByUserName(userName);
@@ -48,14 +49,20 @@ public class JournalEntryControllerV2 {
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-
-   /* @GetMapping("id/{myId}")
-    public JournalEnttiyV2 getJournalEntityById(@PathVariable ObjectId myId) {
-        System.out.println("Request hit ... "+myId);
-        return journalEntryService.findJournalEntryByID(myId).orElse(null);
-    }*/
+*/
 
     @GetMapping("id/{myId}")
+    public ResponseEntity<JournalEnttiyV2> getJournalEntityById(@PathVariable ObjectId myId) {
+        System.out.println("Request hit ... "+myId);
+        //return journalEntryService.findJournalEntryByID(myId).orElse(null);
+        Optional<JournalEnttiyV2>  journalEnttiyV2 = journalEntryService.findJournalEntryByID(myId);
+        if(journalEnttiyV2.isPresent()){
+            return new ResponseEntity<>(journalEnttiyV2.get(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+  /*  @GetMapping("id/{myId}")
     public ResponseEntity<JournalEnttiyV2> getJournalEntityById(@PathVariable ObjectId myId) {
         Optional<JournalEnttiyV2> journalEnttiyV2 = journalEntryService.findJournalEntryByID(myId);
         if(journalEnttiyV2.isPresent()) {
@@ -63,24 +70,32 @@ public class JournalEntryControllerV2 {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-    }
-   /* @PostMapping
-    public boolean creatEntry(@RequestBody JournalEnttiyV2 journalEnttiy) {
-        journalEnttiy.setDate(LocalDateTime.now());
-         journalEntryService.addJournalEntry(journalEnttiy);
-         return true;
     }*/
+    @PostMapping
+    public ResponseEntity<JournalEnttiyV2> creatEntry(@RequestBody JournalEnttiyV2 journalEnttiy) {
+        try {
 
+            journalEnttiy.setDate(LocalDateTime.now());
+            journalEntryService.addJournalEntry(journalEnttiy);
+
+        }catch (Exception e){
+            new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(journalEnttiy, HttpStatus.CREATED);
+    }
+
+/*
     @PostMapping("{userName}")
     public ResponseEntity<JournalEnttiyV2> creatEntry(@RequestBody JournalEnttiyV2 journalEnttiy,@PathVariable String userName) {
        try {
 
            journalEntryService.addJournalEntry(journalEnttiy,userName);
-           return new ResponseEntity<>(journalEnttiy, HttpStatus.CREATED);
+           return new ResponseEntity<>(journalEnttiy, HttpStatus.CREATED); 
        }catch (Exception e) {
            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
        }
     }
+*/
 
     // write delete endpoints here
     @DeleteMapping("id/{myId}")
@@ -89,9 +104,9 @@ public class JournalEntryControllerV2 {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
     // write update endpoints here
-   // @PutMapping("id/{myId}")
-    //public ResponseEntity<?> updateEntry(@PathVariable ObjectId myId, @RequestBody JournalEnttiyV2 newJournalEnttiy) {
-   /*     JournalEnttiyV2 oldJournalEnttiyV2 = journalEntryService.findJournalEntryByID(myId).orElse(null);
+    @PutMapping("id/{myId}")
+        public ResponseEntity<?> updateEntry(@PathVariable ObjectId myId, @RequestBody JournalEnttiyV2 newJournalEnttiy) {
+        JournalEnttiyV2 oldJournalEnttiyV2 = journalEntryService.findJournalEntryByID(myId).orElse(null);
         if(oldJournalEnttiyV2 != null) {
             oldJournalEnttiyV2.setTitle(newJournalEnttiy.getTitle() != null && !newJournalEnttiy.getTitle().equals("")  ? newJournalEnttiy.getTitle() : oldJournalEnttiyV2.getTitle());
             oldJournalEnttiyV2.setContent(newJournalEnttiy.getContent() != null && !newJournalEnttiy.getContent().equals("") ? newJournalEnttiy.getContent() : oldJournalEnttiyV2.getContent());
@@ -99,7 +114,5 @@ public class JournalEntryControllerV2 {
             return new ResponseEntity<>(oldJournalEnttiyV2, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    */
-    //}
-
+    }
 }

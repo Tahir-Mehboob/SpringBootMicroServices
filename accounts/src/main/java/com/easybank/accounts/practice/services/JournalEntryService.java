@@ -27,13 +27,13 @@ public class JournalEntryService {
     @Autowired
     private UserService userService;
 
-    public void addJournalEntry(JournalEnttiyV2 journalEnttiy, String userName) {
-        User user = userService.findUserByUserName(userName);
+    public void addJournalEntry(JournalEnttiyV2 journalEnttiy) {
+       // User user = userService.findUserByUserName(userName);
         journalEnttiy.setDate(LocalDateTime.now());
         JournalEnttiyV2 saved = journalEntryRepository.save(journalEnttiy);
 
-        user.getJournalEntries().add(saved);
-        userService.addUser(user);
+        //user.getJournalEntries().add(saved);
+        //userService.addUser(user);
     }
 
     public List<JournalEnttiyV2> getAll() {
